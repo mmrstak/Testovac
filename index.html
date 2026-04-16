@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChemTestovač LF MU</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- OBR 1: Domov -->
+    <div id="screen-home" class="screen active">
+      <div class="home-header">
+        <div class="app-logo">⚗️</div>
+        <h1>ChemTestovač LF MU</h1>
+        <p class="subtitle">Přijímačky na fyzioterapii — chemie</p>
+      </div>
+
+      <div class="menu-buttons">
+        <button id="btn-quick-test" class="btn-primary">
+          <span>⚡ Rychlý test (20 otázek)</span> <span style="opacity: 0.5">→</span>
+        </button>
+        <button id="btn-thematic-test" class="btn-primary">
+          <span>📚 Tematický trénink</span> <span style="opacity: 0.5">→</span>
+        </button>
+        <button id="btn-exam-sim" class="btn-primary">
+          <span>🎓 Simulace přijímaček (40 ot.)</span> <span style="opacity: 0.5">→</span>
+        </button>
+      </div>
+
+      <div id="home-stats" class="home-stats">
+        <h2>Tvoje statistiky</h2>
+        <div class="stat-values">
+          <div class="stat-item"><span id="stat-tests" class="val">0</span><span class="lbl">Testů</span></div>
+          <div class="stat-item"><span id="stat-avg" class="val">0%</span><span class="lbl">Úspěšnost</span></div>
+          <div class="stat-item"><span id="stat-streak" class="val">0</span><span class="lbl">Streak 🔥</span></div>
+        </div>
+      </div>
+      <p style="text-align:center; color:var(--text-secondary); font-size:12px; margin-top:24px;">Obsahuje otázky z MUNI testů 2008–2018 a modelovek.</p>
+    </div>
+
+    <!-- OBR 2: Témata -->
+    <div id="screen-topic-select" class="screen">
+      <div class="nav-header">
+        <button id="btn-back-home" class="btn-back">←</button>
+        <h2>Vyber téma</h2>
+      </div>
+
+      <div class="topic-grid">
+        <div class="topic-card" data-topic="obecna">
+          <div class="topic-icon">⚛️</div>
+          <div class="topic-info">
+            <h3>Obecná a anorganická chemie</h3>
+            <p>Periodická tabulka, pH, názvosloví, redox...</p>
+          </div>
+        </div>
+        <div class="topic-card" data-topic="organika">
+          <div class="topic-icon">🧬</div>
+          <div class="topic-info">
+            <h3>Organická chemie</h3>
+            <p>Reakce, izomerie, heterocykly, alkoholy...</p>
+          </div>
+        </div>
+        <div class="topic-card" data-topic="biochemie">
+          <div class="topic-icon">🔬</div>
+          <div class="topic-info">
+            <h3>Biochemie</h3>
+            <p>Aminokyseliny, cykly, translace, enzymy...</p>
+          </div>
+        </div>
+        <div class="topic-card" data-topic="all">
+          <div class="topic-icon">🔀</div>
+          <div class="topic-info">
+            <h3>Všechna témata</h3>
+            <p>Náhodný mix ze všech kategorií</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- OBR 3: Test -->
+    <div id="screen-test" class="screen">
+      <div class="test-header">
+        <button id="btn-quit-test" class="btn-back">×</button>
+        <span id="question-counter" style="font-weight:600;">Otázka 1 / 20</span>
+        <div style="width:40px"></div> <!-- zarovnávací tělísko -->
+      </div>
+      
+      <div class="progress-container">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+
+      <div class="meta-row">
+        <span id="question-topic-label" class="badge">Obecná chemie</span>
+        <span id="question-difficulty" class="stars">★★☆</span>
+      </div>
+
+      <div id="question-text" class="question-card">TEXT OTÁZKY</div>
+
+      <div class="options-container" id="options-container">
+        <!-- JS vkládá volby sem -->
+      </div>
+
+      <div id="explanation-box" class="explanation-box">
+        Vysvětlení...
+      </div>
+
+      <button id="btn-next" class="btn-large" style="display: none;">Další otázka →</button>
+    </div>
+
+    <!-- OBR 4: Výsledky -->
+    <div id="screen-results" class="screen">
+      <div class="results-header">
+        <h2 id="score-rating">Výborně! 🎉</h2>
+        <p class="subtitle">Test dokončen</p>
+      </div>
+
+      <div id="score-circle" class="score-circle">
+        <div id="score-percent" class="score-percent">80%</div>
+        <div id="score-fraction" class="score-fraction">16/20</div>
+      </div>
+
+      <div id="achievements-earned" class="achievements-earned">
+        <!-- Odznaky generované JS -->
+      </div>
+
+      <div class="topic-breakdown">
+        <h3>Přehled podle témat</h3>
+        <div id="topic-breakdown">
+          <!-- Plněno přes JS -->
+        </div>
+      </div>
+
+      <div class="result-buttons">
+        <button id="btn-retry" class="btn-large">Zkusit stejný test znovu</button>
+        <button id="btn-weak" class="btn-large secondary" style="display:none;">Projet chybné otázky</button>
+        <button id="btn-home" class="btn-large secondary">Zpět na hlavní menu</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Nejdřív data, pak logika -->
+  <script src="data/questions.js"></script>
+  <script src="data/questions2.js"></script>
+  <script src="data/questions3.js"></script>
+  <script src="data/questions4.js"></script>
+  <script src="data/questions5.js"></script>
+  <script src="data/questions6.js"></script>
+  <script src="data/questions7.js"></script>
+  <script src="data/questions8.js"></script>
+  <script src="data/questions9.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
