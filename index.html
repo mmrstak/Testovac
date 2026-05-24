@@ -1,157 +1,479 @@
 <!DOCTYPE html>
 <html lang="cs">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ChemTestovač LF MU</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmakologie - Detailní Výpis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-hover: #0284c7;
+            --card-bg: rgba(30, 41, 59, 0.6);
+            --border: rgba(255, 255, 255, 0.1);
+            --sidebar-width: 320px;
+            --danger: #ef4444;
+            --success: #10b981;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+            line-height: 1.6;
+            background-image: radial-gradient(circle at top right, rgba(56, 189, 248, 0.1), transparent 400px),
+                              radial-gradient(circle at bottom left, rgba(129, 140, 248, 0.1), transparent 400px);
+            background-attachment: fixed;
+        }
+
+        nav {
+            width: var(--sidebar-width);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(16px);
+            border-right: 1px solid var(--border);
+            padding: 2.5rem 2rem;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            z-index: 10;
+        }
+
+        nav h2 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            background: -webkit-linear-gradient(45deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+
+        nav ul {
+            list-style: none;
+        }
+
+        nav ul.menu-group {
+            margin-bottom: 2rem;
+        }
+
+        nav ul li.menu-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        nav ul li a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 400;
+            transition: all 0.3s ease;
+            display: block;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        nav ul li a:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateX(5px);
+        }
+
+        main {
+            margin-left: var(--sidebar-width);
+            padding: 4rem 5rem;
+            width: calc(100% - var(--sidebar-width));
+            max-width: 1400px;
+        }
+
+        section {
+            margin-bottom: 5rem;
+            animation: fadeIn 0.8s ease-out forwards;
+            opacity: 0;
+        }
+
+        section:nth-child(1) { animation-delay: 0.1s; }
+        section:nth-child(2) { animation-delay: 0.2s; }
+        section:nth-child(3) { animation-delay: 0.3s; }
+        section:nth-child(4) { animation-delay: 0.4s; }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+            color: #fff;
+        }
+
+        p.intro {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            line-height: 1.8;
+            background: rgba(56, 189, 248, 0.05);
+            padding: 1.5rem;
+            border-left: 4px solid var(--accent);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .drug-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+        }
+
+        .drug-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.3);
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1.25rem;
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: var(--accent);
+            border-radius: 50%;
+            margin-right: 12px;
+            box-shadow: 0 0 10px var(--accent);
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: #fff;
+            margin: 1.5rem 0 1rem 0;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        ul.details {
+            list-style: none;
+        }
+
+        ul.details li {
+            margin-bottom: 1rem;
+            color: #cbd5e1;
+            font-size: 1rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        ul.details li::before {
+            content: '▹';
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        ul.details li strong {
+            color: #f8fafc;
+            font-weight: 600;
+            margin-right: 0.25rem;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tag-danger { background: rgba(239, 68, 68, 0.2); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .tag-info { background: rgba(56, 189, 248, 0.2); color: #bae6fd; border: 1px solid rgba(56, 189, 248, 0.3); }
+        .tag-success { background: rgba(16, 185, 129, 0.2); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        .flex-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1024px) {
+            .flex-row { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-  <div class="app-container">
-    
-    <!-- OBR 1: Domov -->
-    <div id="screen-home" class="screen active">
-      <div class="home-header">
-        <div class="app-logo">⚗️</div>
-        <h1>ChemTestovač LF MU</h1>
-        <p class="subtitle">Přijímačky na fyzioterapii — chemie</p>
-      </div>
 
-      <div class="menu-buttons">
-        <button id="btn-quick-test" class="btn-primary">
-          <span>⚡ Rychlý test (20 otázek)</span> <span style="opacity: 0.5">→</span>
-        </button>
-        <button id="btn-thematic-test" class="btn-primary">
-          <span>📚 Tematický trénink</span> <span style="opacity: 0.5">→</span>
-        </button>
-        <button id="btn-exam-sim" class="btn-primary">
-          <span>🎓 Simulace přijímaček (40 ot.)</span> <span style="opacity: 0.5">→</span>
-        </button>
-      </div>
+    <nav>
+        <h2>Výpis<br>Farmakologie</h2>
+        <ul class="menu-group">
+            <li class="menu-title">Obecná farmakologie</li>
+            <li><a href="#kinetika">Farmakokinetika</a></li>
+            <li><a href="#dynamika">Farmakodynamika</a></li>
+            <li><a href="#aplikační-cesty">Aplikační cesty a formy</a></li>
+        </ul>
+        <ul class="menu-group">
+            <li class="menu-title">Speciální farmakologie</li>
+            <li><a href="#cytostatika">Cytostatika a Onkologie</a></li>
+            <li><a href="#ans">Vegetativní nervový systém (ANS)</a></li>
+        </ul>
+    </nav>
 
-      <div id="home-stats" class="home-stats">
-        <h2>Tvoje statistiky</h2>
-        <div class="stat-values">
-          <div class="stat-item"><span id="stat-tests" class="val">0</span><span class="lbl">Testů</span></div>
-          <div class="stat-item"><span id="stat-avg" class="val">0%</span><span class="lbl">Úspěšnost</span></div>
-          <div class="stat-item"><span id="stat-streak" class="val">0</span><span class="lbl">Streak 🔥</span></div>
-        </div>
-      </div>
-      <p style="text-align:center; color:var(--text-secondary); font-size:12px; margin-top:24px;">Obsahuje otázky z MUNI testů 2008–2018 a modelovek.</p>
-    </div>
+    <main>
+        <!-- OBECNÁ FARMAKOLOGIE: KINETIKA -->
+        <section id="kinetika">
+            <h1>Farmakokinetika (Co dělá tělo s lékem)</h1>
+            <p class="intro">
+                Farmakokinetika popisuje osud léčiva v organismu (Absorpce, Distribuce, Metabolismus, Exkrece - ADME). 
+                Klíčovými parametry jsou clearance, biologický poločas a distribuční objem.
+            </p>
 
-    <!-- OBR 2: Témata -->
-    <div id="screen-topic-select" class="screen">
-      <div class="nav-header">
-        <button id="btn-back-home" class="btn-back">←</button>
-        <h2>Vyber téma</h2>
-      </div>
+            <div class="flex-row">
+                <div class="drug-card">
+                    <h2>Základní parametry</h2>
+                    <ul class="details">
+                        <li><strong>Clearance (CL):</strong> Objem krevní plazmy, která se za určitý čas zcela očistí od látky. Ukazuje schopnost těla látku eliminovat. (CLtot = systémová clearance).</li>
+                        <li><strong>Biologický poločas (t1/2):</strong> Doba, za kterou klesne množství látky v organismu na polovinu.</li>
+                        <li><strong>Distribuční objem (Vd):</strong> Hypotetický prostor (objem), ve kterém je léčivo rovnoměrně rozptýleno.</li>
+                        <li><strong>Invaze:</strong> Proces zahrnující absorpci a distribuci látky do tkání.</li>
+                    </ul>
+                </div>
 
-      <div class="topic-grid">
-        <div class="topic-card" data-topic="obecna">
-          <div class="topic-icon">⚛️</div>
-          <div class="topic-info">
-            <h3>Obecná a anorganická chemie</h3>
-            <p>Periodická tabulka, pH, názvosloví, redox...</p>
-          </div>
-        </div>
-        <div class="topic-card" data-topic="organika">
-          <div class="topic-icon">🧬</div>
-          <div class="topic-info">
-            <h3>Organická chemie</h3>
-            <p>Reakce, izomerie, heterocykly, alkoholy...</p>
-          </div>
-        </div>
-        <div class="topic-card" data-topic="biochemie">
-          <div class="topic-icon">🔬</div>
-          <div class="topic-info">
-            <h3>Biochemie</h3>
-            <p>Aminokyseliny, cykly, translace, enzymy...</p>
-          </div>
-        </div>
-        <div class="topic-card" data-topic="all">
-          <div class="topic-icon">🔀</div>
-          <div class="topic-info">
-            <h3>Všechna témata</h3>
-            <p>Náhodný mix ze všech kategorií</p>
-          </div>
-        </div>
-      </div>
-    </div>
+                <div class="drug-card">
+                    <h2>Eliminace a Exkrece</h2>
+                    <ul class="details">
+                        <li><strong>Kinetika 1. řádu (Lineární):</strong> Rychlost eliminace je úměrná koncentraci. Vyloučí se konstantní zlomek látky za čas.</li>
+                        <li><strong>Kinetika 0. řádu (Nelineární):</strong> Rychlost eliminace je konstantní nezávisle na koncentraci (enzymy jsou saturované, např. alkohol).</li>
+                        <li><strong>Renální exkrece (ledviny):</strong> Zvýšíme ji, pokud upravíme pH moči tak, aby se látka ionizovala (neprocházela zpět). Podání zásad pro kyselé látky, osmotická diuretika, kličková diuretika (furosemid).</li>
+                        <li><strong>Hepatální exkrece (játra):</strong> Vylučování do žluče. Další cesty: plíce, sliny, pot, vlasy, mateřské mléko.</li>
+                    </ul>
+                </div>
+            </div>
 
-    <!-- OBR 3: Test -->
-    <div id="screen-test" class="screen">
-      <div class="test-header">
-        <button id="btn-quit-test" class="btn-back">×</button>
-        <span id="question-counter" style="font-weight:600;">Otázka 1 / 20</span>
-        <div style="width:40px"></div> <!-- zarovnávací tělísko -->
-      </div>
-      
-      <div class="progress-container">
-        <div id="progress-bar" class="progress-bar"></div>
-      </div>
+            <div class="drug-card">
+                <h2>Biotransformace (Metabolismus)</h2>
+                <ul class="details">
+                    <li><strong>I. fáze (Oxidace, redukce, hydrolýza):</strong> Z látek vznikají reaktivnější metabolity (např. přes cytochrom P450). Často se zde z prodrug stává aktivní léčivo.</li>
+                    <li><strong>II. fáze (Konjugace):</strong> Spojení molekuly (např. s kyselinou glukuronovou). Vzniká inaktivní, vysoce polární látka, která je snadno vyloučitelná močí (dobře rozpustná ve vodě).</li>
+                    <li><strong>Smysl biotransformace:</strong> Deaktivovat lék, umožnit vyloučení, snížit toxicitu, vytvořit z lipofilní (nepolární) látky látku hydrofilní (polární).</li>
+                </ul>
+            </div>
+        </section>
 
-      <div class="meta-row">
-        <span id="question-topic-label" class="badge">Obecná chemie</span>
-        <span id="question-difficulty" class="stars">★★☆</span>
-      </div>
+        <!-- OBECNÁ FARMAKOLOGIE: DYNAMIKA -->
+        <section id="dynamika">
+            <h1>Farmakodynamika (Co dělá lék s tělem)</h1>
+            
+            <div class="flex-row">
+                <div class="drug-card">
+                    <h2>Působení na receptory</h2>
+                    <ul class="details">
+                        <li><strong>Agonista:</strong> Váže se na receptor a aktivuje ho. (Vnitřní aktivita > 0).</li>
+                        <li><strong>Antagonista:</strong> Váže se na receptor, ale neaktivuje ho (Vnitřní aktivita = 0). Brání vazbě agonisty.
+                            <ul><br>
+                                <li><em>Kompetitivní:</em> Soupeří o stejné vazebné místo. Posunuje křivku dávka-účinek doprava (lze překonat zvýšením dávky agonisty). Reverzibilní vazba.</li>
+                                <li><em>Nekompetitivní:</em> Váže se ireverzibilně nebo na alosterické místo. Snižuje maximální možný účinek (Emax). Zvýšení dávky agonisty nepomůže.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
 
-      <div id="question-text" class="question-card">TEXT OTÁZKY</div>
+                <div class="drug-card">
+                    <h2>Dávkování léčiv</h2>
+                    <ul class="details">
+                        <li><strong>Jednorázové:</strong> Např. podání analgetika při akutní bolesti.</li>
+                        <li><strong>Opakované:</strong> Cílem je dosáhnout a udržet steady-state (ustálený stav) koncentrace v terapeutickém okně.</li>
+                        <li><strong>Kontinuální:</strong> Např. nitrožilní infuze pro konstantní plazmatickou hladinu.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 
-      <div class="options-container" id="options-container">
-        <!-- JS vkládá volby sem -->
-      </div>
+        <!-- APLIKAČNÍ CESTY -->
+        <section id="aplikační-cesty">
+            <h1>Aplikační cesty a lékové formy</h1>
 
-      <div id="explanation-box" class="explanation-box">
-        Vysvětlení...
-      </div>
+            <div class="drug-card">
+                <h2>Dělení aplikačních cest</h2>
+                <ul class="details">
+                    <li><span class="tag tag-success">Enterální</span> Podání do trávicího traktu (GIT). Patří sem perorální (p.o.), sublingvální a rektální podání. (Pozn. u p.o. je výrazný first-pass effect játry).</li>
+                    <li><span class="tag tag-info">Parenterální</span> Mimo trávicí trakt. Injekční (i.v., i.m., s.c.), intraartikulární (do kloubu), inhalační. Zajišťují 100% systémovou biologickou dostupnost u i.v. a rychlý nástup účinku.</li>
+                    <li><span class="tag tag-info">Lokální / Topické</span> Působí přímo v místě podání. Aplikace na kůži a sliznice (masti, krémy, oční nebo nosní kapky, vaginální).</li>
+                </ul>
+            </div>
 
-      <button id="btn-next" class="btn-large" style="display: none;">Další otázka →</button>
-    </div>
+            <div class="flex-row">
+                <div class="drug-card">
+                    <h2>Lékové formy (Dělení)</h2>
+                    <ul class="details">
+                        <li><strong>Tekuté:</strong> Roztoky, kapky (oční, nosní), injekce, emulze, sirupy.</li>
+                        <li><strong>Polotuhé:</strong> Masti (více mastné, na suchou kůži), krémy (obsahují vodu), gely, pasty, čípky (rektální), globule (vaginální), transdermální náplasti (TTS).</li>
+                        <li><strong>Tuhé:</strong> Tablety, tobolky (kapsle), drážé, prášky, zásypy.</li>
+                        <li><strong>Plynné:</strong> Inhalační anestetika, medicinální plyny, spreje, pěny.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
 
-    <!-- OBR 4: Výsledky -->
-    <div id="screen-results" class="screen">
-      <div class="results-header">
-        <h2 id="score-rating">Výborně! 🎉</h2>
-        <p class="subtitle">Test dokončen</p>
-      </div>
+        <!-- CYTOSTATIKA -->
+        <section id="cytostatika">
+            <h1>Cytostatika a Onkologická terapie</h1>
+            <p class="intro">
+                Nádorová buňka se vyznačuje nekontrolovaným růstem, ztrátou diferenciace a schopností metastazovat. Léčba zahrnuje chirurgii, radioterapii a farmakoterapii (cytostatika, cílená biologická léčba, hormonální terapie, imunoterapie).
+            </p>
 
-      <div id="score-circle" class="score-circle">
-        <div id="score-percent" class="score-percent">80%</div>
-        <div id="score-fraction" class="score-fraction">16/20</div>
-      </div>
+            <div class="drug-card">
+                <h2>Mechanismy účinku cytostatik</h2>
+                <ul class="details">
+                    <li><span class="tag tag-danger">Toxická pro zdravé buňky</span> Cytostatika zasahují do buněčného cyklu. Poškozují zejména rychle se dělící tkáně (kostní dřeň, sliznice GIT, vlasové folikuly).</li>
+                    <li>Podávají se obvykle parenterálně v cyklech s přestávkou na rekonvalescenci (zotavení zdravých tkání).</li>
+                    <li>Lze používat jako monoterapii nebo kombinovanou (kombinace různých MÚ snižuje rezistenci a toxicitu).</li>
+                </ul>
+            </div>
 
-      <div id="achievements-earned" class="achievements-earned">
-        <!-- Odznaky generované JS -->
-      </div>
+            <div class="flex-row">
+                <div class="drug-card">
+                    <h3>1. Alkylační látky a platinové deriváty</h3>
+                    <ul class="details">
+                        <li><strong>Cyklofosfamid:</strong> Alkylační látka. Tvoří kovalentní vazby s DNA, brání její replikaci. Nežádoucí účinek: <span class="tag tag-danger">Urotoxicita</span> (hemoragická cystitida). Lze blokovat podpůrnou látkou Mesna.</li>
+                        <li><strong>Cisplatina / Oxaliplatina:</strong> Platinové deriváty. Použití u solidních nádorů. Silná <span class="tag tag-danger">Nefrotoxicita</span> a <span class="tag tag-danger">Neurotoxicita</span>.</li>
+                    </ul>
+                </div>
 
-      <div class="topic-breakdown">
-        <h3>Přehled podle témat</h3>
-        <div id="topic-breakdown">
-          <!-- Plněno přes JS -->
-        </div>
-      </div>
+                <div class="drug-card">
+                    <h3>2. Antimetabolity</h3>
+                    <ul class="details">
+                        <li>Falešné substráty - strukturní analoga purinů nebo pyrimidinů. Brání syntéze DNA.</li>
+                        <li><strong>Metotrexát:</strong> Analogon kyseliny listové. Typický NÚ: <span class="tag tag-danger">Pneumotoxicita</span> a myelosuprese.</li>
+                        <li><strong>5-fluorouracil:</strong> Analogon pyrimidinu.</li>
+                        <li><strong>6-merkaptopurin:</strong> Analogon purinu.</li>
+                    </ul>
+                </div>
 
-      <div class="result-buttons">
-        <button id="btn-retry" class="btn-large">Zkusit stejný test znovu</button>
-        <button id="btn-weak" class="btn-large secondary" style="display:none;">Projet chybné otázky</button>
-        <button id="btn-home" class="btn-large secondary">Zpět na hlavní menu</button>
-      </div>
-    </div>
+                <div class="drug-card">
+                    <h3>3. Interkalační látky (Antracykliny)</h3>
+                    <ul class="details">
+                        <li><strong>Doxorubicin:</strong> Interkalují do DNA a inhibují topoizomerázu II. Typický zástupce z hub/bakterií (hematologické malignity).</li>
+                        <li>Typický NÚ: <span class="tag tag-danger">Kardiotoxicita</span> (srdeční selhání).</li>
+                    </ul>
+                </div>
 
-  </div>
+                <div class="drug-card">
+                    <h3>4. Látky zasahující mikrotubuly</h3>
+                    <ul class="details">
+                        <li><strong>Vinca alkaloidy (Vinkristin):</strong> Brání polymerizaci tubulinu (zástava mitózy). NÚ: silná <span class="tag tag-danger">Neurotoxicita</span>.</li>
+                        <li><strong>Taxany (Paklitaxel):</strong> Brání depolymerizaci mikrotubulů (zmrazení dělicího vřeténka).</li>
+                        <li><strong>Inhibitory topoizomeráz:</strong> Kamptoteciny, podofylotoxiny (rostlinného původu).</li>
+                    </ul>
+                </div>
+            </div>
 
-  <!-- Nejdřív data, pak logika -->
-  <script src="data/questions.js"></script>
-  <script src="data/questions2.js"></script>
-  <script src="data/questions3.js"></script>
-  <script src="data/questions4.js"></script>
-  <script src="data/questions5.js"></script>
-  <script src="data/questions6.js"></script>
-  <script src="data/questions7.js"></script>
-  <script src="data/questions8.js"></script>
-  <script src="data/questions9.js"></script>
-  <script src="app.js"></script>
+            <div class="drug-card">
+                <h2>Obecné nežádoucí účinky a podpůrná terapie</h2>
+                <ul class="details">
+                    <li><strong>Myelotoxicita:</strong> Snížení krvetvorby v kostní dřeni (anémie, trombocytopenie, leukopenie). <em>Řešení: Růstové faktory.</em></li>
+                    <li><strong>GIT toxicita:</strong> Těžká nauzea a zvracení, poškození sliznice úst (mukozitida). <em>Řešení: Antiemetika (setrony).</em></li>
+                    <li><strong>Alopecie:</strong> Vypadávání vlasů vlivem poškození folikulů.</li>
+                    <li><strong>Neurotoxicita, Kardiotoxicita, Urotoxicita, Nefrotoxicita:</strong> Zvládání specifickými antidoty nebo hydratací.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ANS -->
+        <section id="ans">
+            <h1>Vegetativní nervový systém (ANS)</h1>
+            <p class="intro">
+                Zahrnuje sympatikus (boj a útěk) a parasympatikus (odpočinek a trávení). Účinné látky dělíme podle toho, zda tyto systémy stimulují (mimetika/agonisté) nebo tlumí (lytika/antagonisté).
+            </p>
+
+            <div class="flex-row">
+                <div class="drug-card">
+                    <h2>Sympatikus (Adrenergní systém)</h2>
+                    <ul class="details">
+                        <li><strong>Sympatomimetika (Přímá):</strong>
+                            <ul>
+                                <li><em>Adrenalin:</em> Neselektivní (alfa i beta). Využití u resuscitace, anafylaktického šoku.</li>
+                                <li><em>Dobutamin:</em> Selektivní beta-1 (stimulace srdce).</li>
+                                <li><em>Salbutamol, Fenoterol, Terbutalin:</em> Selektivní beta-2 (bronchodilatace u astmatu).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Sympatomimetika (Nepřímá):</strong> Zvyšují uvolňování mediátoru nebo blokují zpětné vychytávání (Efedrin, Methylfenidát - Ritalin).</li>
+                        <li><strong>Sympatolytika (Alfa-blokátory):</strong>
+                            <ul>
+                                <li><em>Prazosin, Terazosin:</em> Selektivní alfa-1 blokátory. Způsobují vazodilataci, použití u hypertenze nebo hypertrofie prostaty.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Sympatolytika (Beta-blokátory):</strong>
+                            <ul>
+                                <li><em>Metoprolol, Bisoprolol, Atenolol:</em> Kardioselektivní beta-1 blokátory (zpomalují srdeční tep).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="drug-card">
+                    <h2>Parasympatikus (Cholinergní systém)</h2>
+                    <ul class="details">
+                        <li><strong>Receptory:</strong> Nikotinové (CNS, ganglia, nervosvalová ploténka) a Muskarinové.</li>
+                        <li><strong>Parasympatomimetika (Přímá):</strong> Deriváty cholinu (pilokarpin). Stimulují GIT, snižují nitrooční tlak.</li>
+                        <li><strong>Parasympatomimetika (Nepřímá):</strong> <em>Inhibitory acetylcholinesterázy (AChE)</em> - brání rozkladu acetylcholinu v synapsi. Působí na svaly i parasympatikus (Neostigmin, Fyzostigmin).</li>
+                        <li><strong>Parasympatolytika (Cholinolytika):</strong>
+                            <ul>
+                                <li><em>Atropin:</em> Antidotum u otrav AChE inhibitory. Mydriatikum. Zrychluje tep, zastavuje pocení a sekreci slin.</li>
+                                <li><em>Spasmolytika:</em> Uvolňují křeče hladkého svalstva (GIT, močové cesty).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="drug-card">
+                <h2>Látky působící v nervosvalové ploténce</h2>
+                <ul class="details">
+                    <li><strong>Myorelaxancia:</strong> Slouží k relaxaci příčně pruhovaného svalstva během operace.
+                        <ul>
+                            <li><em>Nedepolarizující (kompetitivní):</em> Blokují receptory, účinek lze zvrátit inhibitory AChE.</li>
+                            <li><em>Depolarizující:</em> <strong>Sukcinylcholin.</strong> Aktivuje receptor, ale nepustí ho, sval se trvale uvolní. Neexistuje specifické antidotum. Kratkodobý účinek.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
 </body>
 </html>
